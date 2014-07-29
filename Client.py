@@ -9,74 +9,69 @@ class client():
 	def __init__(self):
 		self.auth = auth.auth()
 
+
+	# # # # # # #
 	def _user(self, path):
 		return self.auth.request('/v1/user'+path+'?')
 
 	def _futures(self, path, params='', coin='btc'):
-
-		if params:
-			params = urllib.urlencode(params)+'&'
-
-		if coin == 'btc':
-			data = '/v1/weeklyfutures'+path+'?'+params
-		elif coin == 'ltc':
-			data = '/v1/ltcfutures'+path+'?'+params
-		else:
-			return
+		if params: params = urllib.urlencode(params)+'&'
+		if coin == 'btc': data = '/v1/weeklyfutures'+path+'?'+params
+		elif coin == 'ltc': data = '/v1/ltcfutures'+path+'?'+params
+		else: return
 		return self.auth.request(data)
 
-	'''
-		# get usr info.
-		# get usr balance.
-		# delete token.
-	'''
+
+	# # # # # # #
 	def get_info(self):
+		'''# get usr info'''
 		return self._user('/get_info')
 	def get_balance(self):
+		'''# get usr balance'''
 		return self._user('/get_balance')
 	def delete_token(self):
+		'''# delete token'''
 		return self._user('/delete_token')
 
-	'''
-		# get your btc orders
-		# get last 100 trade history
-		# get btc position
-	'''
+
+	# # # # # # #
 	def btc_orders(self):
+		'''# get your btc orders'''
 		return self._futures('/orders')
 	def btc_records(self):
+		'''# get last 100 trade history'''
 		return self._futures('/records')
 	def btc_position(self):
+		'''# get btc position'''
 		return self._futures('/position')
 
-	'''
-		# btc long  - open
-		# btc long  - close
-		# btc short - open
-		# btc short - close
-	'''
+
+	# # # # # # #
 	def btc_open_buy(self, vol=0, price=0):
+		'''# btc long position - open'''
 		params = {'buy_num': float(vol), 'buy_price': float(price)}
 		return self._futures('/open_buy', params)
 
 	def btc_close_buy(self, vol=0, price=0):
+		'''# btc long position - close'''
 		params = {'amount': float(vol), 'price': float(price)}
 		return self._futures('/close_buy', params)
 
 	def btc_open_sell(self, vol=0, price=0):
+		'''# btc short position - open'''
 		params = {'sell_num': float(vol), 'sell_price': float(price)}
 		return self._futures('/open_sell', params)
 
 	def btc_close_sell(self, vol=0, price=0):
+		'''# btc short position - close'''
 		params = {'amount': float(vol), 'price': float(price)}
 		return self._futures('/close_sell', params)
 
-	'''
-		# cancel an exact order
-		# cancel all orders
-	'''
+
+	# # # # # # #
 	def btc_cancel(self, bs='', no=0):
 		'''
+			cancel an exact order
 			# (buy) or (sell)
 			# id of order
 		'''
@@ -85,6 +80,7 @@ class client():
 
 	def btc_cancel_all(self, bs='all'):
 		'''
+			cancel all orders
 			# (buy) or (sell) or (all)
 		'''
 		params = {'bs': bs}
