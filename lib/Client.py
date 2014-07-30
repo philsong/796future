@@ -9,6 +9,16 @@ class client():
 	def __init__(self):
 		self.auth = auth.auth()
 
+	# # # # # # #
+	def tickers(self, coin='btc'):
+		path = '/ticker.html?type='
+		if coin == 'btc':
+			path += 'weekly'
+		elif coin == 'ltc':
+			path += 'ltc'
+		else:
+			return
+		return self.auth.get(path)
 
 	# # # # # # #
 	def _user(self, path):

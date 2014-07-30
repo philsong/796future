@@ -69,10 +69,20 @@ class auth():
 		try:
 			res = requests.get('https://796.com'+path+'access_token=%s' % token)
 			res = json.loads(res.text)
-			print 'request:', res['msg']
 			if res['errno'] == '0':
 				return res['data']
 		except:
 			print 'error with request'
+			print res
+			return
+
+	def get(self, path):
+
+		try:
+			res = requests.get('http://api.796.com/v3/futures'+path)
+			res = json.loads(res.text)
+			return res
+		except:
+			print 'wrong when getting markets info'
 			print res
 			return
