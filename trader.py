@@ -11,6 +11,22 @@ ltc = res[2]-res[3]
 if client.btc_orders():
 	client.btc_cancel_all()
 
+def interest(coin='btc'):
+	
+	import re
+	from lib2 import interest as i
+	i = i.interest()
+
+	with open('/root/796/data/interest', 'r') as f:
+		lines = f.readlines()[-3:]
+
+	if coin == 'btc':
+		interest = [float(re.findall('(.+) ', line)) for line in lines]
+		last = i.data()[0]
+	elif coin == 'ltc':
+		interest = [float(re.findall(' (.+)', line)) for line in lines]
+		last = i.data()[1]
+	return sum(interest)/3/last
 
 ###------------------------------------------------###
 #                         BTC                        #
@@ -38,7 +54,7 @@ if btc >= 0.03:
 	pos = btc_position()
 	try: pos = float(pos['buy']['bzj'])
 	except: pos = 0.0
-	vol = round(bal-pos, 2)
+	vol = round(bal-pos, 2)*interest()*4
 	if vol>0:
 		price = float(client.tickers()['ticker']['buy'])
 		client.btc_open_buy(vol, price)
@@ -67,7 +83,7 @@ elif btc <= -0.03:
 	try: pos = float(pos['sell']['bzj'])
 	except: pos = 0.0
 
-	vol = round(bal-pos, 2)
+	vol = round(bal-pos, 2)*interest()*4
 	if vol:
 		price = float(client.tickers()['ticker']['sell'])
 		client.btc_open_sell(vol, price)
@@ -99,7 +115,7 @@ if ltc >= 0.03:
 	pos = ltc_position()
 	try: pos = float(pos['buy']['bzj'])
 	except: pos = 0.0
-	vol = round(bal-pos, 2)
+	vol = round(bal-pos, 2)*interest('ltc')*4
 	if vol:
 		price = float(client.tickers('ltc')['ticker']['buy'])
 		client.ltc_open_buy(vol, price)
@@ -132,7 +148,7 @@ elif ltc <= -0.03:
 	try: pos = float(pos['sell']['bzj'])
 	except: pos = 0.0
 
-	vol = round(bal-pos, 2)
+	vol = round(bal-pos, 2)*interest('ltc')*4
 	if vol>0:
 		price = float(client.tickers('ltc')['ticker']['sell'])
 		client.ltc_open_sell(vol, price)

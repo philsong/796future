@@ -1,5 +1,5 @@
 import re, urllib2
-import BeautifulSoup as bs
+from bs4 import BeautifulSoup as bs
 
 class interest():
 
@@ -12,7 +12,7 @@ class interest():
 		try:
 			response = urllib2.urlopen('https://796.com')
 			html = response.read()
-			soup = bs.BeautifulSoup(html).findAll('div', {'class':'arrowNum'})
+			soup = bs(html).findAll('div', {'class':'arrowNum'})
 		except:
 			print 'cannot connect 796.'
 			return 0,0
