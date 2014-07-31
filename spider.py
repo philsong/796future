@@ -1,4 +1,4 @@
-from lib3 import interest as i
+from lib2 import interest as i
 i = i.interest()
 
 data = i.data()
