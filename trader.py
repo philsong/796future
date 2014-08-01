@@ -65,15 +65,21 @@ elif abs(btc) <= 0.01:
 
 	if not pos: raise Exception
 
-	if pos['sell']:
+	try:
 		vol = float(pos['sell']['total'])
-		price = float(client.tickers()['ticker']['sell'])
-		client.btc_close_sell(vol, price)
+		if vol:
+			price = float(client.tickers()['ticker']['sell'])
+			client.btc_close_sell(vol, price)
+	except:
+		pass
 
-	if pos['buy']:
+	try:
 		vol = float(pos['buy']['total'])
-		price = float(client.tickers()['ticker']['buy'])
-		client.btc_close_buy(vol, price)
+		if vol:
+			price = float(client.tickers()['ticker']['buy'])
+			client.btc_close_buy(vol, price)
+	except:
+		pass
 
 elif btc <= -0.03:
 
