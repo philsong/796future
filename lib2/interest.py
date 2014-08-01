@@ -1,13 +1,9 @@
-import re, urllib2
+import re, urllib2, threading
 from bs4 import BeautifulSoup as bs
 
-class interest():
+class interest(threading.Thread):
 
-	def __init__(self):
-
-		pass
-
-	def data(self):
+	def run(self):
 		
 		try:
 			response = urllib2.urlopen('https://796.com')
