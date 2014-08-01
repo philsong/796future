@@ -4,7 +4,7 @@ client = Client.client()
 
 from lib2 import elite
 e = elite.elite()
-res = e.start()
+res = e().run()
 
 btc = res[0]-res[1]
 ltc = res[2]-res[3]
@@ -18,15 +18,15 @@ def interest(coin='btc'):
 	from lib2 import interest as i
 	i = i.interest()
 
-	last = i.run()
+	last = i().run()
 	with open('/root/796/data/interest', 'r') as f:
 		lines = f.readlines()[-3:]
 
 	if coin == 'btc':
-		interest = [float(re.findall('(.+) ', line)) for line in lines]
+		interest = [float(re.findall('(.+) ', line)[0]) for line in lines]
 		last = last[0]
 	elif coin == 'ltc':
-		interest = [float(re.findall(' (.+)', line)) for line in lines]
+		interest = [float(re.findall(' (.+)', line)[0]) for line in lines]
 		last = last[1]
 	return sum(interest)/3/last
 
@@ -54,8 +54,8 @@ class btc_balance(threading.Thread):
 
 if btc >= 0.03:
 
-	bal = btc_balance.start()
-	pos = btc_position.start()
+	bal = btc_balance().run()
+	pos = btc_position().run()
 	try: pos = float(pos['buy']['bzj'])
 	except: pos = 0.0
 	vol = round(bal-pos, 2)*interest()*8
@@ -65,30 +65,24 @@ if btc >= 0.03:
 
 elif abs(btc) <= 0.01:
 
-	pos = btc_position.start()
+	pos = btc_position().run()
 
 	if not pos: raise Exception
 
-	try:
+	if pos['sell']:
 		vol = float(pos['sell']['total'])
-		if vol:
-			price = float(client.tickers()['ticker']['sell'])
-			client.btc_close_sell(vol, price)
-	except:
-		pass
+		price = float(client.tickers()['ticker']['sell'])
+		client.btc_close_sell(vol, price)
 
-	try:
+	if pos['buy']:
 		vol = float(pos['buy']['total'])
-		if vol:
-			price = float(client.tickers()['ticker']['buy'])
-			client.btc_close_buy(vol, price)
-	except:
-		pass
+		price = float(client.tickers()['ticker']['buy'])
+		client.btc_close_buy(vol, price)
 
 elif btc <= -0.03:
 
-	bal = btc_balance.start()
-	pos = btc_position.start()
+	bal = btc_balance().run()
+	pos = btc_position().run()
 		
 	try: pos = float(pos['sell']['bzj'])
 	except: pos = 0.0
@@ -123,8 +117,8 @@ class ltc_balance(threading.Thread):
 
 if ltc >= 0.03:
 
-	bal = ltc_balance.start()
-	pos = ltc_position.start()
+	bal = ltc_balance().run()
+	pos = ltc_position().run()
 	try: pos = float(pos['buy']['bzj'])
 	except: pos = 0.0
 	vol = round(bal-pos, 2)*interest('ltc')*8
@@ -134,7 +128,7 @@ if ltc >= 0.03:
 
 elif abs(ltc) <= 0.01:
 
-	pos = ltc_position.start()
+	pos = ltc_position().run()
 
 	try:
 		vol = float(pos['sell']['total'])
@@ -154,8 +148,8 @@ elif abs(ltc) <= 0.01:
 
 elif ltc <= -0.03:
 
-	bal = ltc_balance.start()
-	pos = ltc_position.start()
+	bal = ltc_balance().run()
+	pos = ltc_position().run()
 		
 	try: pos = float(pos['sell']['bzj'])
 	except: pos = 0.0
